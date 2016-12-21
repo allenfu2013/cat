@@ -79,7 +79,7 @@ CREATE TABLE `report` (
   `name` varchar(20) NOT NULL COMMENT '报表名称',
   `ip` varchar(50) DEFAULT NULL COMMENT '报表来自于哪台机器',
   `domain` varchar(50) NOT NULL  COMMENT '报表项目',
-  `period` timestamp NOT NULL COMMENT '报表时间段',
+  `period` datetime NOT NULL COMMENT '报表时间段',
   `creation_date` timestamp NOT NULL COMMENT '报表创建时间',
   PRIMARY KEY (`id`),
   KEY `IX_Domain_Name_Period` (`domain`,`name`,`period`),
@@ -121,7 +121,7 @@ CREATE TABLE `businessReport` (
   `name` varchar(20) NOT NULL COMMENT '报表名称',
   `ip` varchar(50) NOT NULL COMMENT '报表来自于哪台机器',
   `productLine` varchar(50) NOT NULL COMMENT '指标来源于哪个产品组',
-  `period` timestamp NOT NULL COMMENT '报表时间段',
+  `period` datetime NOT NULL COMMENT '报表时间段',
   `content` longblob COMMENT '用于存放报表的具体内容',
   `creation_date` timestamp NOT NULL COMMENT '报表创建时间',
   PRIMARY KEY (`id`),
@@ -177,7 +177,7 @@ CREATE TABLE `config` (
   `name` varchar(50) NOT NULL COMMENT '配置名称',
   `content` longtext COMMENT '配置的具体内容',
   `creation_date` datetime NOT NULL COMMENT '配置创建时间',
-  `modify_date` datetime NOT NULL COMMENT '配置修改时间',
+  `modify_date` timestamp NOT NULL COMMENT '配置修改时间',
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用于存储系统的全局配置信息';
