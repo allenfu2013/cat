@@ -15,6 +15,15 @@
 		$(document).ready(function() {
 			$('#projects_config').addClass('active open');
 			$('#projects').addClass('active');
+
+            var projectId = $("#projectIdInp").val();
+            if(projectId){
+                $("#submitBtn").val("更新");
+                $("#opInp").val("updateSubmit");
+            } else {
+                $("#submitBtn").val("创建");
+                $("#opInp").val("projectCreate");
+            }
 			
 			if("${payload.action.name}" != 'projects') {
 				var state = '${model.opState}';
@@ -57,19 +66,19 @@
 			});
 			
 			$("#search_go").bind("click",function(e){
-				var newUrl = '/cat/s/config?op=projects&domain='+$( "#search" ).val() +'&date=${model.date}';
+				var newUrl = '/cat/s/config?op=projects&domain='+$("#search").val();
 				window.location.href = newUrl;
 			});
 			$('#wrap_search').submit(
 				function(){
-					var newUrl = '/cat/s/config?op=projects&domain='+$( "#search" ).val() +'&date=${model.date}';
+					var newUrl = '/cat/s/config?op=projects&domain='+$("#search").val() +'&date=${model.date}';
 					window.location.href = newUrl;
 					return false;
 				}		
 			);
 		});
 	</script>
-	<div class="navbar-header pull-left position" style="width:350px;MARGIN-LEFT:10%;MARGIN-TOP:5px;padding:5px;">
+	<div class="navbar-header pull-left position" style="width:350px;MARGIN-TOP:5px;padding:5px;">
 		<form id="wrap_search" style="margin-bottom:0px;">
 		<div class="input-group">
 			<c:if test="${not empty payload.project.domain}">
@@ -82,13 +91,11 @@
 				<c:set var="domain" value="cat"/>
 			</c:if>
 			<span class="input-icon" style="width:300px;">
-				<input type="text" placeholder="input domain for search" value="${domain}" class="search-input search-input form-control ui-autocomplete-input" id="search" autocomplete="off" />
+				<input type="text" placeholder="input domain for search or create" value="${domain}" class="search-input search-input form-control ui-autocomplete-input" id="search" autocomplete="off" />
 				<i class="ace-icon fa fa-search nav-search-icon"></i>
 				</span>
 				<span class="input-group-btn" style="width:50px">
-				<button class="btn btn-sm btn-primary" type="button" id="search_go">
-				Go
-				</button>
+				<button class="btn btn-sm btn-primary" type="button" id="search_go">Search</button>
 				</span>
 			</div>
 		</form>
@@ -97,14 +104,13 @@
 	<br/>
 	<br/>
 	<div style="padding:5px;">
-	<form name="projectUpdate" id="form" method="get" action="${model.pageUri}?op=updateSubmit">
+	<form name="projectUpdate" id="form" method="post" action="${model.pageUri}">
 	<table class="table table-striped table-condensed ">
-		<input type="hidden" name="project.id" value="${model.project.id}" />
-		<input type="hidden" name="project.domain" value="${model.project.domain}" />
-		<input type="hidden" name="op" value="updateSubmit" />
+		<input type="hidden" id="projectIdInp" name="project.id" value="${model.project.id}" />
+		<input type="hidden" id="opInp" name="op" value="" />
 		<tr>
 			<td style="width:10%;">CAT项目名称</td>
-			<td>${model.project.domain}</td>
+            <td><input type="name" class="input-xlarge" name="project.domain" value="${model.project.domain}" /></td>
 			<td style="color:red">注意：建议使用统一项目名规范。</td>
 		</tr>
 		<tr>
@@ -143,10 +149,13 @@
 			<td>字段(多个，逗号分割)<span  style="color:red">【此字段会和CMDB信息同步】</span></td>
 		</tr>
 		<tr>
-			<td colspan="2" align="center"><input class='btn btn-primary btn-sm' type="submit" name="submit" value="提交" />&nbsp;
-			<a href="?op=projectDelete&projectId=${model.project.id}" class="btn btn-danger btn-sm delete" >
-						<i class="ace-icon fa fa-trash-o bigger-140"></i></a>
-						<h4 class="text-center text-danger" id="state">&nbsp;</h4></td>
+			<td colspan="2" align="center">
+                <input class='btn btn-primary btn-sm' type="submit" id="submitBtn" name="submit" value="提交" />
+			    <a href="?op=projectDelete&projectId=${model.project.id}" style="margin-left: 50px;" class="btn btn-danger btn-sm delete" >
+                    <i class="ace-icon fa fa-trash-o bigger-140"></i>
+                </a>
+                <h4 class="text-center text-danger" id="state">&nbsp;</h4>
+            </td>
 		</tr>
 	</table>
 </form>

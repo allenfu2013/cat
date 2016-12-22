@@ -113,6 +113,7 @@ public class Handler implements PageHandler<Context> {
 		model.setAction(action);
 		switch (action) {
 		case PROJECT_ALL:
+        case PROJECT_CREATE:
 		case PROJECT_UPDATE_SUBMIT:
 		case PROJECT_DELETE:
 		case DOMAIN_GROUP_CONFIGS:
@@ -126,7 +127,7 @@ public class Handler implements PageHandler<Context> {
 		case STORAGE_GROUP_CONFIG_UPDATE:
 		case SERVER_FILTER_CONFIG_UPDATE:
 		case ALL_REPORT_CONFIG:
-			m_globalConfigProcessor.process(action, payload, model);
+			m_globalConfigProcessor.process(ctx, action, payload, model);
 			break;
 
 		case THIRD_PARTY_RULE_CONFIGS:

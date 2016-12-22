@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.dianping.cat.system.page.config.*;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 
@@ -21,12 +22,9 @@ import com.dianping.cat.report.page.DomainGroupConfigManager;
 import com.dianping.cat.report.page.statistics.config.BugConfigManager;
 import com.dianping.cat.report.page.storage.config.StorageGroupConfigManager;
 import com.dianping.cat.service.ProjectService;
-import com.dianping.cat.system.page.config.Action;
-import com.dianping.cat.system.page.config.ConfigHtmlParser;
-import com.dianping.cat.system.page.config.Model;
-import com.dianping.cat.system.page.config.Payload;
 import com.dianping.cat.system.page.router.config.RouterConfigHandler;
 import com.dianping.cat.system.page.router.config.RouterConfigManager;
+import org.unidal.web.mvc.payload.ParameterProvider;
 
 public class GlobalConfigProcessor {
 
@@ -72,7 +70,7 @@ public class GlobalConfigProcessor {
 		return m_projectService.delete(proto);
 	}
 
-	public void process(Action action, Payload payload, Model model) {
+	public void process(Context ctx, Action action, Payload payload, Model model) {
 		switch (action) {
 		case PROJECT_ALL:
 			String domain = payload.getDomain();
@@ -83,20 +81,23 @@ public class GlobalConfigProcessor {
 			model.setProjects(queryAllProjects());
 			model.setProject(m_projectService.findByDomain(domain));
 			break;
-		case PROJECT_UPDATE_SUBMIT:
-			model.setOpState(updateProject(payload));
-			domain = payload.getDomain();
+        case PROJECT_CREATE:
+        case PROJECT_UPDATE_SUBMIT:
+            model.setOpState(Action.PROJECT_CREATE == action ?
+                    createProject(ctx, payload) : updateProject(payload)
+            );
+            domain = payload.getDomain();
 
-			if (StringUtils.isEmpty(domain)) {
-				domain = payload.getProject().getDomain();
+            if (StringUtils.isEmpty(domain)) {
+                domain = payload.getProject().getDomain();
 
-				if (StringUtils.isEmpty(domain)) {
-					domain = Constants.CAT;
-				}
-			}
-			model.setProjects(queryAllProjects());
-			model.setProject(m_projectService.findByDomain(domain));
-			break;
+                if (StringUtils.isEmpty(domain)) {
+                    domain = Constants.CAT;
+                }
+            }
+            model.setProjects(queryAllProjects());
+            model.setProject(m_projectService.findByDomain(domain));
+            break;
 		case PROJECT_DELETE:
 			model.setOpState(deleteProject(payload));
 			domain = payload.getDomain();
@@ -213,6 +214,24 @@ public class GlobalConfigProcessor {
 
 		return m_projectService.update(project);
 	}
+
+    // add by hope_fu@163.com
+    private boolean createProject(Context ctx, Payload payload) {
+        ParameterProvider provider = ctx.getRequestContext().getParameterProvider();
+        payload.setDomain(provider.getParameter("project.domain"));
+        Project project = new Project();
+        project.setDomain(payload.getDomain());
+        project.setCmdbDomain(provider.getParameter("project.cmdbDomain"));
+        project.setLevel(Integer.valueOf(provider.getParameter("project.level")));
+        project.setBu(provider.getParameter("project.bu"));
+        project.setCmdbProductline(provider.getParameter("project.cmdbProductline"));
+        project.setOwner(provider.getParameter("project.owner"));
+        project.setEmail(provider.getParameter("project.email"));
+        project.setPhone(provider.getParameter("project.phone"));
+        payload.setProject(project);
+
+        return m_projectService.create(project);
+    }
 
 	public static class ProjectCompartor implements Comparator<Project> {
 

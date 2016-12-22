@@ -3,6 +3,9 @@ package com.dianping.cat.system.page.config;
 public enum Action implements org.unidal.web.mvc.Action {
 	PROJECT_ALL("projects"),
 
+    // enable create project from ui, updated by hope_fu@163.com
+    PROJECT_CREATE("projectCreate"),
+
 	PROJECT_UPDATE_SUBMIT("updateSubmit"),
 
 	PROJECT_DELETE("projectDelete"),

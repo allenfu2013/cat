@@ -46,12 +46,14 @@ public class ProjectService implements Initializable {
 	public boolean delete(Project project) {
 		int id = project.getId();
 		String domainName = null;
+        String cmdbDomain = null;
 
 		for (Entry<String, Project> entry : m_domainToProjects.entrySet()) {
 			Project pro = entry.getValue();
 
 			if (pro.getId() == id) {
 				domainName = pro.getDomain();
+                cmdbDomain = pro.getCmdbDomain();
 				break;
 			}
 		}
@@ -59,7 +61,7 @@ public class ProjectService implements Initializable {
 		try {
 			m_projectDao.deleteByPK(project);
 			m_domainToProjects.remove(domainName);
-			m_cmdbToProjects.remove(project.getCmdbDomain());
+			m_cmdbToProjects.remove(cmdbDomain);
 			return true;
 		} catch (Exception e) {
 			Cat.logError("delete project error ", e);
@@ -162,6 +164,18 @@ public class ProjectService implements Initializable {
 		}
 		return false;
 	}
+
+    public boolean create(Project project) {
+        try {
+            insert(project);
+            m_domains.put(project.getDomain(), project.getDomain());
+            return true;
+        } catch (Exception e) {
+            Cat.logError(e);
+        }
+        return false;
+
+    }
 
 	protected void refresh() {
 		try {

@@ -3,6 +3,9 @@ package com.dianping.cat.system.page.config;
 public enum JspFile {
 	PROJECT_ALL("/jsp/system/project/project.jsp"),
 
+    // update by hope_fu@163.com
+    PROJECT_CREATE("/jsp/system/project/project.jsp"),
+
 	AGGREGATION_ALL("/jsp/system/aggregation/aggregation.jsp"),
 
 	AGGREGATION_UPATE("/jsp/system/aggregation/aggregationUpdate.jsp"),
