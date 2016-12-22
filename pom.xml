@@ -15,7 +15,8 @@
 		<module>cat-hadoop</module>
 		<module>cat-home</module>
 		<module>cat-maven-plugin</module>
-	</modules>
+        <module>cat-sample</module>
+    </modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

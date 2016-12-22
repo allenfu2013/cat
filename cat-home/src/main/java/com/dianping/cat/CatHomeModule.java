@@ -30,88 +30,89 @@ import com.dianping.cat.report.alert.transaction.TransactionAlert;
 import com.dianping.cat.report.alert.web.WebAlert;
 
 public class CatHomeModule extends AbstractModule {
-	public static final String ID = "cat-home";
+    public static final String ID = "cat-home";
 
-	@Override
-	protected void execute(ModuleContext ctx) throws Exception {
-		ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
+    @Override
+    protected void execute(ModuleContext ctx) throws Exception {
+        ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
 
-		ctx.lookup(MessageConsumer.class);
+        ctx.lookup(MessageConsumer.class);
 
-		ConfigReloadTask configReloadTask = ctx.lookup(ConfigReloadTask.class);
-		Threads.forGroup("cat").start(configReloadTask);
+        ConfigReloadTask configReloadTask = ctx.lookup(ConfigReloadTask.class);
+        Threads.forGroup("cat").start(configReloadTask);
 
-		if (serverConfigManager.isJobMachine()) {
-			DefaultTaskConsumer taskConsumer = ctx.lookup(DefaultTaskConsumer.class);
+        if (serverConfigManager.isJobMachine()) {
+            DefaultTaskConsumer taskConsumer = ctx.lookup(DefaultTaskConsumer.class);
 
-			Threads.forGroup("cat").start(taskConsumer);
-		}
+            Threads.forGroup("cat").start(taskConsumer);
+        }
 
-		if (serverConfigManager.isAlertMachine()) {
-			BusinessAlert metricAlert = ctx.lookup(BusinessAlert.class);
-			NetworkAlert networkAlert = ctx.lookup(NetworkAlert.class);
-			DatabaseAlert databaseAlert = ctx.lookup(DatabaseAlert.class);
-			SystemAlert systemAlert = ctx.lookup(SystemAlert.class);
-			ExceptionAlert exceptionAlert = ctx.lookup(ExceptionAlert.class);
-			FrontEndExceptionAlert frontEndExceptionAlert = ctx.lookup(FrontEndExceptionAlert.class);
-			HeartbeatAlert heartbeatAlert = ctx.lookup(HeartbeatAlert.class);
-			ThirdPartyAlert thirdPartyAlert = ctx.lookup(ThirdPartyAlert.class);
-			ThirdPartyAlertBuilder alertBuildingTask = ctx.lookup(ThirdPartyAlertBuilder.class);
-			AppAlert appAlert = ctx.lookup(AppAlert.class);
-			WebAlert webAlert = ctx.lookup(WebAlert.class);
-			TransactionAlert transactionAlert = ctx.lookup(TransactionAlert.class);
-			EventAlert eventAlert = ctx.lookup(EventAlert.class);
-			StorageSQLAlert storageDatabaseAlert = ctx.lookup(StorageSQLAlert.class);
-			StorageCacheAlert storageCacheAlert = ctx.lookup(StorageCacheAlert.class);
+        if (serverConfigManager.isAlertMachine()) {
+            BusinessAlert metricAlert = ctx.lookup(BusinessAlert.class);
+            NetworkAlert networkAlert = ctx.lookup(NetworkAlert.class);
+            DatabaseAlert databaseAlert = ctx.lookup(DatabaseAlert.class);
+            SystemAlert systemAlert = ctx.lookup(SystemAlert.class);
+            ExceptionAlert exceptionAlert = ctx.lookup(ExceptionAlert.class);
+            FrontEndExceptionAlert frontEndExceptionAlert = ctx.lookup(FrontEndExceptionAlert.class);
+            HeartbeatAlert heartbeatAlert = ctx.lookup(HeartbeatAlert.class);
+            ThirdPartyAlert thirdPartyAlert = ctx.lookup(ThirdPartyAlert.class);
+            ThirdPartyAlertBuilder alertBuildingTask = ctx.lookup(ThirdPartyAlertBuilder.class);
+            AppAlert appAlert = ctx.lookup(AppAlert.class);
+            WebAlert webAlert = ctx.lookup(WebAlert.class);
+            TransactionAlert transactionAlert = ctx.lookup(TransactionAlert.class);
+            EventAlert eventAlert = ctx.lookup(EventAlert.class);
+            StorageSQLAlert storageDatabaseAlert = ctx.lookup(StorageSQLAlert.class);
+            StorageCacheAlert storageCacheAlert = ctx.lookup(StorageCacheAlert.class);
 
+            // cancel network, database, thirdParty, web alert , updated by hope_fu@163.com
 //			Threads.forGroup("cat").start(networkAlert);
 //			Threads.forGroup("cat").start(databaseAlert);
-			Threads.forGroup("cat").start(systemAlert);
-			Threads.forGroup("cat").start(metricAlert);
-			Threads.forGroup("cat").start(exceptionAlert);
-			Threads.forGroup("cat").start(frontEndExceptionAlert);
-			Threads.forGroup("cat").start(heartbeatAlert);
+            Threads.forGroup("cat").start(systemAlert);
+            Threads.forGroup("cat").start(metricAlert);
+            Threads.forGroup("cat").start(exceptionAlert);
+            Threads.forGroup("cat").start(frontEndExceptionAlert);
+            Threads.forGroup("cat").start(heartbeatAlert);
 //			Threads.forGroup("cat").start(thirdPartyAlert);
-			Threads.forGroup("cat").start(alertBuildingTask);
-			Threads.forGroup("cat").start(appAlert);
+            Threads.forGroup("cat").start(alertBuildingTask);
+            Threads.forGroup("cat").start(appAlert);
 //			Threads.forGroup("cat").start(webAlert);
-			Threads.forGroup("cat").start(transactionAlert);
-			Threads.forGroup("cat").start(eventAlert);
-			Threads.forGroup("cat").start(storageDatabaseAlert);
-			Threads.forGroup("cat").start(storageCacheAlert);
-		}
+            Threads.forGroup("cat").start(transactionAlert);
+            Threads.forGroup("cat").start(eventAlert);
+            Threads.forGroup("cat").start(storageDatabaseAlert);
+            Threads.forGroup("cat").start(storageCacheAlert);
+        }
 
-		final MessageConsumer consumer = ctx.lookup(MessageConsumer.class);
-		Runtime.getRuntime().addShutdownHook(new Thread() {
+        final MessageConsumer consumer = ctx.lookup(MessageConsumer.class);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
-			@Override
-			public void run() {
-				consumer.doCheckpoint();
-			}
-		});
-	}
+            @Override
+            public void run() {
+                consumer.doCheckpoint();
+            }
+        });
+    }
 
-	@Override
-	public Module[] getDependencies(ModuleContext ctx) {
-		return ctx.getModules(CatConsumerModule.ID);
-	}
+    @Override
+    public Module[] getDependencies(ModuleContext ctx) {
+        return ctx.getModules(CatConsumerModule.ID);
+    }
 
-	@Override
-	protected void setup(ModuleContext ctx) throws Exception {
-		File serverConfigFile = ctx.getAttribute("cat-server-config-file");
-		ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
-		final TcpSocketReceiver messageReceiver = ctx.lookup(TcpSocketReceiver.class);
+    @Override
+    protected void setup(ModuleContext ctx) throws Exception {
+        File serverConfigFile = ctx.getAttribute("cat-server-config-file");
+        ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
+        final TcpSocketReceiver messageReceiver = ctx.lookup(TcpSocketReceiver.class);
 
-		serverConfigManager.initialize(serverConfigFile);
-		messageReceiver.init();
+        serverConfigManager.initialize(serverConfigFile);
+        messageReceiver.init();
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
-			@Override
-			public void run() {
-				messageReceiver.destory();
-			}
-		});
-	}
+            @Override
+            public void run() {
+                messageReceiver.destory();
+            }
+        });
+    }
 
 }
