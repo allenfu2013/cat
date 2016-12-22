@@ -4,6 +4,7 @@ import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * Cat Sample
@@ -11,26 +12,39 @@ import java.io.IOException;
 public class CatSample {
 
     public static void main(String[] args) throws IOException {
-        LoggerUtil.info(CatSample.class, "Cat sample is to user cat error, transaction, event");
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println(
+                    "choose to test: \n" +
+                            "1: error\n" +
+                            "2: transaction\n" +
+                            "3: event\n" +
+                            "4: metric\n" +
+                            "q: exit\n" +
+                            "please enter: "
+            );
 
-        error();
-        transaction();
-        event();
-
-        /*LoggerUtil.info(CatSample.class, "Choose and press Enter to test: ('q' to exit)");
-
-        String choose = System.console().readLine();
-
-        while (choose != "q") {
-
-        }*/
-
-        LoggerUtil.info(CatSample.class, "press any key to quit: ");
-
-        System.in.read();
-
-
-        LoggerUtil.info(CatSample.class, "Bye!");
+            String choose = sc.next();
+            switch (choose) {
+                case "1":
+                    error();
+                    break;
+                case "2":
+                    transaction();
+                    break;
+                case "3":
+                    event();
+                    break;
+                case "4":
+                    metric();
+                    break;
+                case "q":
+                    System.exit(0);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public static void error() {
@@ -39,7 +53,6 @@ public class CatSample {
 
     public static void transaction() {
         Transaction t = Cat.newTransaction("YourType", "YourName");
-
         try {
             // your business here
             Thread.sleep(500);
@@ -55,5 +68,9 @@ public class CatSample {
     public static void event() {
         Cat.logEvent("Type1", "Name1");
         Cat.logEvent("Type2", "Name2", Event.SUCCESS, "a=1&b=2");
+    }
+
+    public static void metric() {
+        Cat.logMetricForCount("PayAmount", 10);
     }
 }
