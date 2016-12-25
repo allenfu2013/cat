@@ -36,8 +36,6 @@ public class CatHomeModule extends AbstractModule {
     protected void execute(ModuleContext ctx) throws Exception {
         ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
 
-        ctx.lookup(MessageConsumer.class);
-
         ConfigReloadTask configReloadTask = ctx.lookup(ConfigReloadTask.class);
         Threads.forGroup("cat").start(configReloadTask);
 
@@ -64,17 +62,16 @@ public class CatHomeModule extends AbstractModule {
             StorageSQLAlert storageDatabaseAlert = ctx.lookup(StorageSQLAlert.class);
             StorageCacheAlert storageCacheAlert = ctx.lookup(StorageCacheAlert.class);
 
-            // cancel network, database, thirdParty, web alert , updated by hope_fu@163.com
-//			Threads.forGroup("cat").start(networkAlert);
-//			Threads.forGroup("cat").start(databaseAlert);
+			Threads.forGroup("cat").start(networkAlert);
+            Threads.forGroup("cat").start(databaseAlert);
             Threads.forGroup("cat").start(systemAlert);
             Threads.forGroup("cat").start(metricAlert);
             Threads.forGroup("cat").start(exceptionAlert);
-            Threads.forGroup("cat").start(frontEndExceptionAlert);
+//            Threads.forGroup("cat").start(frontEndExceptionAlert);
             Threads.forGroup("cat").start(heartbeatAlert);
-//			Threads.forGroup("cat").start(thirdPartyAlert);
+			Threads.forGroup("cat").start(thirdPartyAlert);
             Threads.forGroup("cat").start(alertBuildingTask);
-            Threads.forGroup("cat").start(appAlert);
+//            Threads.forGroup("cat").start(appAlert);
 //			Threads.forGroup("cat").start(webAlert);
             Threads.forGroup("cat").start(transactionAlert);
             Threads.forGroup("cat").start(eventAlert);

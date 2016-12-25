@@ -16,13 +16,16 @@
 						<button class="btn btn-success" id="tab_realtime">
 							<i class="ace-icon fa fa-signal"></i>&nbsp;&nbsp;实时
 						</button>
-						<!-- <button class="btn btn-grey" id="tab_offtime">
+						<button class="btn btn-grey" id="tab_offtime">
 							<i class="ace-icon fa fa-film"></i>&nbsp;&nbsp;离线
-						</button> -->
+						</button>
 						<!-- #section:basics/sidebar.layout.shortcuts -->
 						<button class="btn btn-warning" id="tab_document">
 							<i class="ace-icon fa fa-users"></i>&nbsp;&nbsp;文档
 						</button>
+                        <button class="btn btn-danger" id="tab_config">
+                            <i class="ace-icon fa fa-cogs"></i>&nbsp;&nbsp;配置
+                        </button>
 					</div>
 					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
 						<span class="btn btn-success"></span>
