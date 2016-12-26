@@ -87,6 +87,9 @@
 			<c:if test="${not empty payload.domain}">
 				<c:set var="domain" value="${payload.domain}"/>
 			</c:if>
+            <c:if test="${empty domain}">
+                <c:set var="domain" value="cat"/>
+            </c:if>
 			<span class="input-icon" style="width:300px;">
 				<input type="text" placeholder="input domain for search" value="${domain}" class="search-input search-input form-control ui-autocomplete-input" id="search" autocomplete="off" />
 				<i class="ace-icon fa fa-search nav-search-icon"></i>

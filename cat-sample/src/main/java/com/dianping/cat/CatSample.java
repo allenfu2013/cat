@@ -24,21 +24,22 @@ public class CatSample {
                             "please enter: "
             );
 
-            String choose = sc.next();
+            int choose = Integer.valueOf(sc.next());
+
             switch (choose) {
-                case "1":
+                case 1:
                     error();
                     break;
-                case "2":
+                case 2:
                     transaction();
                     break;
-                case "3":
+                case 3:
                     event();
                     break;
-                case "4":
+                case 4:
                     metric();
                     break;
-                case "q":
+                case 5:
                     System.exit(0);
                     break;
                 default:
