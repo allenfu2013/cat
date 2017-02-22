@@ -5,8 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+import com.dianping.cat.CatProperties;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
@@ -29,9 +29,6 @@ public class ExceptionDecorator extends ProjectDecorator implements Initializabl
     public static final String ID = AlertType.Exception.getName();
 
     protected DateFormat m_linkFormat = new SimpleDateFormat("yyyyMMddHH");
-
-    private static final String PROPERTIES_ALERT = "/data/appdatas/cat/cat.properties";
-    private Properties catProps = new Properties();
 
     @Override
     public String generateContent(AlertEntity alert) {
@@ -71,8 +68,7 @@ public class ExceptionDecorator extends ProjectDecorator implements Initializabl
         map.put("date", m_format.format(alert.getDate()));
         map.put("linkDate", m_linkFormat.format(alert.getDate()));
         map.put("contactInfo", contactInfo);
-        map.put("catHost", catProps.getProperty("cat.host"));
-        System.out.println("######## " + map);
+        map.put("catHost", CatProperties.getInstance().getProperty("cat.host"));
         return map;
     }
 
@@ -92,30 +88,10 @@ public class ExceptionDecorator extends ProjectDecorator implements Initializabl
     public void initialize() throws InitializationException {
         m_configuration = new Configuration();
         m_configuration.setDefaultEncoding("UTF-8");
-        InputStream in = null;
-        InputStreamReader reader = null;
         try {
-            in = new FileInputStream(new File(PROPERTIES_ALERT));
-            reader = new InputStreamReader(in, "UTF-8");
-            catProps.load(reader);
             m_configuration.setClassForTemplateLoading(this.getClass(), "/freemaker");
         } catch (Exception e) {
             Cat.logError(e);
-        } finally {
-            if (null != in) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Cat.logError(e);
-                }
-            }
-            if (null != reader) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    Cat.logError(e);
-                }
-            }
         }
     }
 
