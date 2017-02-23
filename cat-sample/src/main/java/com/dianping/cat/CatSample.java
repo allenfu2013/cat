@@ -20,7 +20,7 @@ public class CatSample {
                             "2: transaction\n" +
                             "3: event\n" +
                             "4: metric\n" +
-                            "q: exit\n" +
+                            "5: exit\n" +
                             "please enter: "
             );
 
